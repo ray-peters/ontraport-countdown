@@ -56,10 +56,10 @@
                     ( ( this.getAttribute( "month" ) - 1 ) || today.getUTCMonth() ),
                     // DAY -- range: 0-30
                     ( this.getAttribute( "day" ) || 0 ),
-                    // HOUR -- range: 0-59
-                    ( ( this.getAttribute( "hour" ) - 1 ) || 0 ),
+                    // HOUR -- range: 0-23
+                    ( this.getAttribute( "hour" ) || 0 ),
                     // MINUTE -- range: 0-59
-                    ( ( this.getAttribute( "minute" ) - 1 ) || 0 )
+                    ( this.getAttribute( "minute" ) || 0 )
                 ),
                 then = +countdownDate;
 
