@@ -62,9 +62,9 @@
 
                 if ( destination ) {
                     // Go!
-                    window.location.href( destination );
+                    window.location.replace( destination );
                 }
-                
+
             } else {
                 var duration = ( then - now ),
                     elem, newVal;
