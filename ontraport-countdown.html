@@ -1,20 +1,43 @@
 <script>
     ( function(){
-        
-        var element = Object.create( HTMLElement.prototype );
-
 
         var _SECOND = 1000,
             _MINUTE = _SECOND * 60,
             _HOUR = _MINUTE * 60,
-            _DAY = _HOUR * 24,
-            elemCache = {};
+            _DAY = _HOUR * 24;
+        
+        var element = Object.create( HTMLElement.prototype );
+
+        var countdownActive = false,
+            countdownTimeout;
+
+        element.isActive = function(){
+            return countdownActive;
+        };
+
+        element.startCountdown = function(){
+            countdownActive = true;
+            var poller = function( elem ) {
+                return function(){
+                    if ( elem.isActive() ) {
+                        elem.updateDisplay();
+                        countdownTimeout = setTimeout( poller, 1000 );
+                    }
+                };
+            }( this );
+
+            poller();
+        };  
+
+        element.stopCountdown = function(){
+            countdownActive = false;
+            clearTimeout( countdownTimeout );
+        };
 
         element.updateDisplay = function(){
             var day = this.getAttribute( "day" ),
                 month = this.getAttribute( "month" ),
                 year = this.getAttribute( "year" );
-
 
             var today = new Date,
                 now = +today,
@@ -30,17 +53,37 @@
                     elem,
                     newVal;
 
-                // Days until 
-                this.querySelector( ".ce-days" ).innerText = _DAY;
+                // Update days display
+                elem = this.querySelector( ".ce-days" );
 
-                this.querySelector( ".ce-hours" ).innerText = _HOUR;
-
-                this.querySelector( ".ce-minutes" ).innerText = _MINUTE;
-
-                this.querySelector( ".ce-seconds" ).innerText = _SECOND;
-
-
+                if ( elem ) {
+                    newVal = Math.floor( duration / _DAY );
+                    elem.innerText = newVal;
+                    duration -= ( newVal * _DAY );
+                }
                 
+                elem = this.querySelector( ".ce-hours" );
+
+                if ( elem ) {
+                    newVal = Math.floor( duration / _HOUR );
+                    elem.innerText = newVal;
+                    duration -= ( newVal * _HOUR );
+                }
+
+                elem = this.querySelector( ".ce-minutes" );
+
+                if ( elem ) {
+                    newVal = Math.floor( duration / _MINUTE );
+                    elem.innerText = newVal;
+                    duration -= ( newVal * _MINUTE );
+                }
+
+                elem = this.querySelector( ".ce-seconds" );
+                if ( elem ) {
+                    newVal = Math.floor( duration / _SECOND );
+                    elem.innerText = newVal;
+                    duration -= ( newVal * _SECOND );
+                }
             }
         };
 
@@ -48,6 +91,7 @@
         // Fires when an instance of the element is created
         element.createdCallback = function(){
             this.updateDisplay();
+            this.startCountdown();
         };
         
         // Fires when an instance was inserted into the document
