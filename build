@@ -1,0 +1,6 @@
+#!/bin/bash
+# ONTRAPORT-COUNTDOWN build script
+
+java -jar libs/closure-compiler.jar --compilation_level ADVANCED --js='./src/ontraport-countdown.js' --js_output_file='./src/countdown.js'
+
+echo "Successfully built ontraport-countdown.js!"
