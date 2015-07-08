@@ -3,15 +3,13 @@
         
         var element = Object.create( HTMLElement.prototype );
 
-        var countdownActive = false,
-            countdownTimeout;
-
+        element._active = false;
         element.isActive = function(){
-            return countdownActive;
+            return this._active;
         };
 
         element.startCountdown = function(){
-            countdownActive = true;
+            this._active = true;
 
             var poller = function( elem ) {
                 return function(){
@@ -26,8 +24,7 @@
         };  
 
         element.stopCountdown = function(){
-            countdownActive = false;
-            clearTimeout( countdownTimeout );
+            this._active = false;
         };
 
         var refreshCountdownDate = true;
@@ -39,19 +36,11 @@
                 _HOUR = _MINUTE * 60,
                 _DAY = _HOUR * 24;
 
-            // Current element attribute values
-            var day, month, year,
-                countdownDate, then;
-
             return function(){
 
-                var today = new Date,
-                    now = +today;
-
-                if ( refreshCountdownDate ) {
-                    day = this.getAttribute( "day" );
-                    month = this.getAttribute( "month" );
-                    year = this.getAttribute( "year" );
+                var day = this.getAttribute( "day" ),
+                    month = this.getAttribute( "month" ),
+                    year = this.getAttribute( "year" ),
 
                     // new Date( year, month, day, hours, minutes, seconds, milliseconds );
                     countdownDate = new Date(
@@ -61,12 +50,13 @@
                         ( month - 1 ) || today.getUTCMonth(),
                         // DAY
                         ( day || 0 )
-                    );
+                    ),
                     
-                    then = +countdownDate;
+                    then = +countdownDate,
 
-                    refreshCountdownDate = false;
-                }
+                    today = new Date,
+                    now = +today;
+
 
                 if ( now > then ) {
                     console.log( "redirect!!!" );
@@ -127,15 +117,7 @@
         element.detachedCallback = function(){};
         
         // Fires when an attribute was added, removed, or updated
-        element.attributeChangedCallback = function( attr, oldVal, newVal ) {
-            switch( attr ) {
-                case "day":
-                case "month":
-                case "year":
-                refreshCountdownDate = true;
-                break;
-            }
-        };
+        element.attributeChangedCallback = function( attr, oldVal, newVal ) {};
         
 
         // Registers custom element
