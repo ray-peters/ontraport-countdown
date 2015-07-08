@@ -1,10 +1,5 @@
 <script>
     ( function(){
-
-        var _SECOND = 1000,
-            _MINUTE = _SECOND * 60,
-            _HOUR = _MINUTE * 60,
-            _DAY = _HOUR * 24;
         
         var element = Object.create( HTMLElement.prototype );
 
@@ -17,6 +12,7 @@
 
         element.startCountdown = function(){
             countdownActive = true;
+
             var poller = function( elem ) {
                 return function(){
                     if ( elem.isActive() ) {
@@ -34,58 +30,88 @@
             clearTimeout( countdownTimeout );
         };
 
+        var refreshCountdownDate = true;
+
         element.updateDisplay = function(){
-            var day = this.getAttribute( "day" ),
-                month = this.getAttribute( "month" ),
-                year = this.getAttribute( "year" );
+            // CONSTANTS
+            var _SECOND = 1000,
+                _MINUTE = _SECOND * 60,
+                _HOUR = _MINUTE * 60,
+                _DAY = _HOUR * 24;
 
-            var today = new Date,
-                now = +today,
-                // new Date( year, month, day, hours, minutes, seconds, milliseconds );
-                countdownDate = new Date( year || today.getFullYear(), ( month - 1 ) || today.getUTCMonth(), day || 0 );
-                then = +countdownDate;
+            // Current element attribute values
+            var day, month, year,
+                countdownDate, then;
 
+            return function(){
 
-            if ( now > then ) {
-                console.log( "redirect!!!" );
-            } else {
-                var duration = then - now,
-                    elem,
-                    newVal;
+                var today = new Date,
+                    now = +today;
 
-                // Update days display
-                elem = this.querySelector( ".ce-days" );
+                if ( refreshCountdownDate ) {
+                    day = this.getAttribute( "day" );
+                    month = this.getAttribute( "month" );
+                    year = this.getAttribute( "year" );
 
-                if ( elem ) {
-                    newVal = Math.floor( duration / _DAY );
-                    elem.innerText = newVal;
-                    duration -= ( newVal * _DAY );
-                }
-                
-                elem = this.querySelector( ".ce-hours" );
+                    // new Date( year, month, day, hours, minutes, seconds, milliseconds );
+                    countdownDate = new Date(
+                        // YEAR
+                        ( year || today.getFullYear() ),
+                        // MONTH
+                        ( month - 1 ) || today.getUTCMonth(),
+                        // DAY
+                        ( day || 0 )
+                    );
+                    
+                    then = +countdownDate;
 
-                if ( elem ) {
-                    newVal = Math.floor( duration / _HOUR );
-                    elem.innerText = newVal;
-                    duration -= ( newVal * _HOUR );
-                }
-
-                elem = this.querySelector( ".ce-minutes" );
-
-                if ( elem ) {
-                    newVal = Math.floor( duration / _MINUTE );
-                    elem.innerText = newVal;
-                    duration -= ( newVal * _MINUTE );
+                    refreshCountdownDate = false;
                 }
 
-                elem = this.querySelector( ".ce-seconds" );
-                if ( elem ) {
-                    newVal = Math.floor( duration / _SECOND );
-                    elem.innerText = newVal;
-                    duration -= ( newVal * _SECOND );
+                if ( now > then ) {
+                    console.log( "redirect!!!" );
+                } else {
+                    var duration = ( then - now ),
+                        elem, newVal;
+
+                    // Update days display
+                    elem = this.querySelector( ".ce-days" );
+
+                    if ( elem ) {
+                        newVal = Math.floor( duration / _DAY );
+                        elem.innerText = newVal;
+                        duration -= ( newVal * _DAY );
+                    }
+                    
+                    // Update hours display
+                    elem = this.querySelector( ".ce-hours" );
+
+                    if ( elem ) {
+                        newVal = Math.floor( duration / _HOUR );
+                        elem.innerText = newVal;
+                        duration -= ( newVal * _HOUR );
+                    }
+
+                    // Update minutes display
+                    elem = this.querySelector( ".ce-minutes" );
+
+                    if ( elem ) {
+                        newVal = Math.floor( duration / _MINUTE );
+                        elem.innerText = newVal;
+                        duration -= ( newVal * _MINUTE );
+                    }
+
+                    // Update seconds display
+                    elem = this.querySelector( ".ce-seconds" );
+
+                    if ( elem ) {
+                        newVal = Math.floor( duration / _SECOND );
+                        elem.innerText = newVal;
+                        duration -= ( newVal * _SECOND );
+                    }
                 }
-            }
-        };
+            };
+        }();
 
 
         // Fires when an instance of the element is created
@@ -104,15 +130,9 @@
         element.attributeChangedCallback = function( attr, oldVal, newVal ) {
             switch( attr ) {
                 case "day":
-                    console.log( "updating the day!" );
-                break;
                 case "month":
-                    console.log( "updating the month!" );
-
-                break;
                 case "year":
-                    console.log( "updating the year!" );
-
+                refreshCountdownDate = true;
                 break;
             }
         };
