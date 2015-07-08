@@ -61,9 +61,7 @@
                     // MINUTE -- range: 0-59
                     ( ( this.getAttribute( "minute" ) - 1 ) || 0 )
                 ),
-                
                 then = +countdownDate;
-
 
             if ( now > then ) {
                 // Handle redirect
@@ -77,8 +75,7 @@
             } else {
                 // Update displays
 
-                var duration = ( then - now ),
-                    elem, newVal;
+                var duration = ( then - now );
 
                 // Update days display
                 newVal = Math.floor( duration / _DAY );
@@ -108,6 +105,8 @@
     element.createdCallback = function(){
         this.updateDisplay();
         this.startCountdown();
+        var classes = this.getAttribute( "class" ) || "";
+        this.setAttribute( "class", classes + " countdown" );
     };
     
     // Fires when an instance was inserted into the document
