@@ -2,15 +2,59 @@
     ( function(){
         
         var element = Object.create( HTMLElement.prototype );
-        
+
+
+        var _SECOND = 1000,
+            _MINUTE = _SECOND * 60,
+            _HOUR = _MINUTE * 60,
+            _DAY = _HOUR * 24,
+            elemCache = {};
+
+        element.updateDisplay = function(){
+            var day = this.getAttribute( "day" ),
+                month = this.getAttribute( "month" ),
+                year = this.getAttribute( "year" );
+
+
+            var today = new Date,
+                now = +today,
+                // new Date( year, month, day, hours, minutes, seconds, milliseconds );
+                countdownDate = new Date( year || today.getFullYear(), ( month - 1 ) || today.getUTCMonth(), day || 0 );
+                then = +countdownDate;
+
+
+            if ( now > then ) {
+                console.log( "redirect!!!" );
+            } else {
+                var duration = then - now,
+                    elem,
+                    newVal;
+
+                // Days until 
+                this.querySelector( ".ce-days" ).innerText = _DAY;
+
+                this.querySelector( ".ce-hours" ).innerText = _HOUR;
+
+                this.querySelector( ".ce-minutes" ).innerText = _MINUTE;
+
+                this.querySelector( ".ce-seconds" ).innerText = _SECOND;
+
+
+                
+            }
+        };
+
+
         // Fires when an instance of the element is created
-        element.createdCallback = function(){};
+        element.createdCallback = function(){
+            this.updateDisplay();
+        };
         
         // Fires when an instance was inserted into the document
-        element.attachedCallback = function() {};
+        element.attachedCallback = function(){};
         
         // Fires when an instance was removed from the document
-        element.detachedCallback = function() {};
+        element.detachedCallback = function(){};
         
         // Fires when an attribute was added, removed, or updated
         element.attributeChangedCallback = function( attr, oldVal, newVal ) {
