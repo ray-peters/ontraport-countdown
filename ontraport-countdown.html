@@ -4,6 +4,7 @@
         var element = Object.create( HTMLElement.prototype );
 
         element._active = false;
+
         element.isActive = function(){
             return this._active;
         };
@@ -15,7 +16,7 @@
                 return function(){
                     if ( elem.isActive() ) {
                         elem.updateDisplay();
-                        countdownTimeout = setTimeout( poller, 1000 );
+                        setTimeout( poller, 1000 );
                     }
                 };
             }( this );
@@ -26,8 +27,6 @@
         element.stopCountdown = function(){
             this._active = false;
         };
-
-        var refreshCountdownDate = true;
 
         element.updateDisplay = function(){
             // CONSTANTS
@@ -42,7 +41,10 @@
                     month = this.getAttribute( "month" ),
                     year = this.getAttribute( "year" ),
 
-                    // new Date( year, month, day, hours, minutes, seconds, milliseconds );
+                    today = new Date,
+                    now = +today,
+
+                    // new Date( year, month, day, hours, minutes, seconds, milliseconds )
                     countdownDate = new Date(
                         // YEAR
                         ( year || today.getFullYear() ),
@@ -52,10 +54,7 @@
                         ( day || 0 )
                     ),
                     
-                    then = +countdownDate,
-
-                    today = new Date,
-                    now = +today;
+                    then = +countdownDate;
 
 
                 if ( now > then ) {
@@ -114,7 +113,9 @@
         element.attachedCallback = function(){};
         
         // Fires when an instance was removed from the document
-        element.detachedCallback = function(){};
+        element.detachedCallback = function(){
+            this._active = false;
+        };
         
         // Fires when an attribute was added, removed, or updated
         element.attributeChangedCallback = function( attr, oldVal, newVal ) {};
