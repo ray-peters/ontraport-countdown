@@ -58,7 +58,13 @@
 
 
             if ( now > then ) {
-                console.log( "redirect!!!" );
+                var destination = this.getAttribute( "redirect_href" );
+
+                if ( destination ) {
+                    // Go!
+                    window.location.href( destination );
+                }
+                
             } else {
                 var duration = ( then - now ),
                     elem, newVal;
