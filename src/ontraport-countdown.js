@@ -36,10 +36,18 @@
             _DAY = _HOUR * 24;
 
         // Returns the 
-        var _updateDisplayHelper = function( display, newVal, context ) {
-            var elem = context.querySelector( ".ce-" + display );
+        var _updateDisplayHelper = function( display, newVal, toFixed ) {
+            var elem = this.querySelector( ".ce-" + display ),
+                _newVal = newVal + "";
+
+            if ( toFixed ) {
+                if ( _newVal.length === 1 ) {
+                    _newVal = "0" + _newVal;
+                }
+            }
+
             if ( elem ) {
-                elem.innerText = newVal;
+                elem.innerText = _newVal;
             }
         };
 
@@ -79,22 +87,22 @@
 
                 // Update days display
                 newVal = Math.floor( duration / _DAY );
-                _updateDisplayHelper( "days", newVal, this );
+                _updateDisplayHelper.apply( this, [ "days", newVal ] );
                 duration -= ( newVal * _DAY );
 
                 // Update hours display
                 newVal = Math.floor( duration / _HOUR );
-                _updateDisplayHelper( "hours", newVal, this );
+                _updateDisplayHelper.apply( this, [ "hours", newVal, true ] );
                 duration -= ( newVal * _HOUR );
 
                 // Update minutes display
                 newVal = Math.floor( duration / _MINUTE );
-                _updateDisplayHelper( "minutes", newVal, this );
+                _updateDisplayHelper.apply( this, [ "minutes", newVal, true ] );
                 duration -= ( newVal * _MINUTE );
 
                 // Update seconds display
                 newVal = Math.floor( duration / _SECOND );
-                _updateDisplayHelper( "seconds", newVal, this );
+                _updateDisplayHelper.apply( this, [ "seconds", newVal, true ] );
                 duration -= ( newVal * _SECOND );
             }
         };
