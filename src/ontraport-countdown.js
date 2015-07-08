@@ -3,6 +3,8 @@
     
     var element = Object.create( HTMLElement.prototype );
 
+    var innerTextMethod = ( "innerText" in element ) ? "innerText" :"textContent";
+
     element._active = false;
 
     element.isActive = function(){
@@ -47,7 +49,7 @@
             }
 
             if ( elem ) {
-                elem.innerText = _newVal;
+                elem[ innerTextMethod ] = _newVal;
             }
         };
 
