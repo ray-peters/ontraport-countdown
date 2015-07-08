@@ -1,0 +1,6 @@
+[submodule "src/document-register-element"]
+	path = src/document-register-element
+	url = https://github.com/WebReflection/document-register-element.git
+[submodule "src/webcomponents_version/webcomponentsjs"]
+	path = src/webcomponents_version/webcomponentsjs
+	url = https://github.com/webcomponents/webcomponentsjs.git
