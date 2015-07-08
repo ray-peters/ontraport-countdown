@@ -35,29 +35,38 @@
             _HOUR = _MINUTE * 60,
             _DAY = _HOUR * 24;
 
+        // Returns the 
+        var _updateDisplayHelper = function( display, newVal, context ) {
+            var elem = context.querySelector( ".ce-" + display );
+            if ( elem ) {
+                elem.innerText = newVal;
+            }
+        };
+
         return function(){
 
-            var day = this.getAttribute( "day" ),
-                month = this.getAttribute( "month" ),
-                year = this.getAttribute( "year" ),
-
-                today = new Date,
+            var today = new Date,
                 now = +today,
 
                 // new Date( year, month, day, hours, minutes, seconds, milliseconds )
                 countdownDate = new Date(
                     // YEAR
-                    ( year || today.getFullYear() ),
-                    // MONTH
-                    ( month - 1 ) || today.getUTCMonth(),
-                    // DAY
-                    ( day || 0 )
+                    ( this.getAttribute( "year" ) || today.getFullYear() ),
+                    // MONTH -- range: 0-11
+                    ( ( this.getAttribute( "month" ) - 1 ) || today.getUTCMonth() ),
+                    // DAY -- range: 0-30
+                    ( this.getAttribute( "day" ) || 0 ),
+                    // HOUR -- range: 0-59
+                    ( ( this.getAttribute( "hour" ) - 1 ) || 0 ),
+                    // MINUTE -- range: 0-59
+                    ( ( this.getAttribute( "minute" ) - 1 ) || 0 )
                 ),
                 
                 then = +countdownDate;
 
 
             if ( now > then ) {
+                // Handle redirect
                 var destination = this.getAttribute( "redirect_href" );
 
                 if ( destination ) {
@@ -66,44 +75,30 @@
                 }
 
             } else {
+                // Update displays
+
                 var duration = ( then - now ),
                     elem, newVal;
 
                 // Update days display
-                elem = this.querySelector( ".ce-days" );
+                newVal = Math.floor( duration / _DAY );
+                _updateDisplayHelper( "days", newVal, this );
+                duration -= ( newVal * _DAY );
 
-                if ( elem ) {
-                    newVal = Math.floor( duration / _DAY );
-                    elem.innerText = newVal;
-                    duration -= ( newVal * _DAY );
-                }
-                
                 // Update hours display
-                elem = this.querySelector( ".ce-hours" );
-
-                if ( elem ) {
-                    newVal = Math.floor( duration / _HOUR );
-                    elem.innerText = newVal;
-                    duration -= ( newVal * _HOUR );
-                }
+                newVal = Math.floor( duration / _HOUR );
+                _updateDisplayHelper( "hours", newVal, this );
+                duration -= ( newVal * _HOUR );
 
                 // Update minutes display
-                elem = this.querySelector( ".ce-minutes" );
-
-                if ( elem ) {
-                    newVal = Math.floor( duration / _MINUTE );
-                    elem.innerText = newVal;
-                    duration -= ( newVal * _MINUTE );
-                }
+                newVal = Math.floor( duration / _MINUTE );
+                _updateDisplayHelper( "minutes", newVal, this );
+                duration -= ( newVal * _MINUTE );
 
                 // Update seconds display
-                elem = this.querySelector( ".ce-seconds" );
-
-                if ( elem ) {
-                    newVal = Math.floor( duration / _SECOND );
-                    elem.innerText = newVal;
-                    duration -= ( newVal * _SECOND );
-                }
+                newVal = Math.floor( duration / _SECOND );
+                _updateDisplayHelper( "seconds", newVal, this );
+                duration -= ( newVal * _SECOND );
             }
         };
     }();
